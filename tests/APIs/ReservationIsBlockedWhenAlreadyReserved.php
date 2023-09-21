@@ -40,4 +40,28 @@ class ReservationIsBlockedWhenAlreadyReserved extends TestCase
         // Then:
         $this->response->assertStatus(400);
     }
+
+    public function test_can_not_create_reservation_when_days_overlap()
+    {
+        // Given:
+        $office = Office::factory()->create();
+        $reservationRequest = [
+            'customer_name' => $this->faker->name(),
+            'office_id' => $office->getKey(),
+            'reservation_date' => Carbon::now()->format('Y-m-d'),
+            'duration' => 2
+        ];
+        Reservation::factory($reservationRequest)->create();
+
+        // When:
+        $reservationRequest['reservation_date'] = Carbon::now()->addDay()->format('Y-m-d');
+        $this->response = $this->json(
+            'POST',
+            '/api/reservations',
+            $reservationRequest
+        );
+
+        // Then:
+        $this->response->assertStatus(400);
+    }
 }

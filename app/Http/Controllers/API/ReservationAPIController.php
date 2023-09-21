@@ -101,7 +101,8 @@ class ReservationAPIController extends AppBaseController
             ->whereBetween('reservation_date', [
                 $request->date('reservation_date'),
                 $request->date('reservation_date')->addDays($request->get('duration') - 1)
-            ])->exists();
+            ])
+            ->exists();
 
         if($existingReservation) {
             return new JsonResponse([

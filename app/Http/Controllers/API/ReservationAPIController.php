@@ -97,6 +97,19 @@ class ReservationAPIController extends AppBaseController
     {
         $input = $request->all();
 
+        $existingReservation = Reservation::where('office_id', $request->get('office_id'))
+            ->whereBetween('reservation_date', [
+                $request->date('reservation_date'),
+                $request->date('reservation_date')->addDays($request->get('duration') - 1)
+            ])->exists();
+
+        if($existingReservation) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'This office is already reserved for this date'
+            ], 400);
+        }
+
         $reservation = $this->reservationRepository->create($input);
 
         return $this->sendResponse($reservation->toArray(), 'Reservation saved successfully');

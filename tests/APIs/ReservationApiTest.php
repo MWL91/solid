@@ -2,6 +2,7 @@
 
 namespace Tests\APIs;
 
+use App\Models\Office;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -17,7 +18,9 @@ class ReservationApiTest extends TestCase
      */
     public function test_create_reservation()
     {
-        $reservation = Reservation::factory()->make()->toArray();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->make()->toArray();
 
         $this->response = $this->json(
             'POST',
@@ -32,7 +35,9 @@ class ReservationApiTest extends TestCase
      */
     public function test_read_reservation()
     {
-        $reservation = Reservation::factory()->create();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->create();
 
         $this->response = $this->json(
             'GET',
@@ -47,8 +52,10 @@ class ReservationApiTest extends TestCase
      */
     public function test_update_reservation()
     {
-        $reservation = Reservation::factory()->create();
-        $editedReservation = Reservation::factory()->make()->toArray();
+        $reservation = Reservation::factory([
+            'office_id' => $office_id = Office::factory()->create()
+        ])->create();
+        $editedReservation = Reservation::factory(['office_id' => $office_id])->make()->toArray();
 
         $this->response = $this->json(
             'PUT',
@@ -64,7 +71,9 @@ class ReservationApiTest extends TestCase
      */
     public function test_delete_reservation()
     {
-        $reservation = Reservation::factory()->create();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->create();
 
         $this->response = $this->json(
             'DELETE',

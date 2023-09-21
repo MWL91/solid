@@ -21,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::resource('reservations', App\Http\Controllers\API\ReservationAPIController::class)
     ->except(['create', 'edit']);
+
+Route::resource('offices', App\Http\Controllers\API\OfficeAPIController::class)
+    ->except(['create', 'edit']);

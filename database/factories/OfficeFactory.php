@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Reservation;
+use App\Models\Office;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
-class ReservationFactory extends Factory
+class OfficeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Reservation::class;
+    protected $model = Office::class;
 
     /**
      * Define the model's default state.
@@ -24,9 +24,8 @@ class ReservationFactory extends Factory
     {
 
         return [
-            'customer_name' => $this->faker->name(),
-            'reservation_date' => $this->faker->date('Y-m-d'),
-            'duration' => $this->faker->numberBetween(1, 999),
+            'name' => $this->faker->colorName(),
+            'location' => $this->faker->city(),
             'created_at' => $this->faker->date('Y-m-d H:i:s'),
             'updated_at' => $this->faker->date('Y-m-d H:i:s')
         ];

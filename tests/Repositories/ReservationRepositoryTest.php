@@ -2,6 +2,7 @@
 
 namespace Tests\Repositories;
 
+use App\Models\Office;
 use App\Models\Reservation;
 use App\Repositories\ReservationRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -25,7 +26,9 @@ class ReservationRepositoryTest extends TestCase
      */
     public function test_create_reservation()
     {
-        $reservation = Reservation::factory()->make()->toArray();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->make()->toArray();
 
         $createdReservation = $this->reservationRepo->create($reservation);
 
@@ -41,7 +44,9 @@ class ReservationRepositoryTest extends TestCase
      */
     public function test_read_reservation()
     {
-        $reservation = Reservation::factory()->create();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->create();
 
         $dbReservation = $this->reservationRepo->find($reservation->id);
 
@@ -54,7 +59,9 @@ class ReservationRepositoryTest extends TestCase
      */
     public function test_update_reservation()
     {
-        $reservation = Reservation::factory()->create();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->create();
         $fakeReservation = Reservation::factory()->make()->toArray();
 
         $updatedReservation = $this->reservationRepo->update($fakeReservation, $reservation->id);
@@ -69,7 +76,9 @@ class ReservationRepositoryTest extends TestCase
      */
     public function test_delete_reservation()
     {
-        $reservation = Reservation::factory()->create();
+        $reservation = Reservation::factory([
+            'office_id' => Office::factory()->create()
+        ])->create();
 
         $resp = $this->reservationRepo->delete($reservation->id);
 

@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reservations', function (Blueprint $table) {
+        Schema::create('offices', function (Blueprint $table) {
             $table->id('id');
-            $table->string('customer_name');
-            $table->integer('office_id');
-            $table->date('reservation_date');
-            $table->integer('duration');
+            $table->string('name');
+            $table->string('location');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::drop('reservations');
+        Schema::drop('offices');
     }
 };

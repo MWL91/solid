@@ -9,6 +9,7 @@ use App\Repositories\ReservationRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ReservationController
@@ -97,11 +98,21 @@ class ReservationAPIController extends AppBaseController
     {
         $input = $request->all();
 
-        $existingReservation = Reservation::where('office_id', $request->get('office_id'))
-            ->whereBetween('reservation_date', [
-                $request->date('reservation_date'),
+        $existingReservation = Reservation::query()
+            ->where(
+                'office_id',
+                $request->get('office_id')
+            )
+            ->where(
+                DB::raw('DATE(reservation_date + duration)'),
+                '>=',
+                $request->date('reservation_date')
+            )
+            ->where(
+                'reservation_date',
+                '<=',
                 $request->date('reservation_date')->addDays($request->get('duration') - 1)
-            ])
+            )
             ->exists();
 
         if($existingReservation) {

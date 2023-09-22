@@ -24,3 +24,5 @@ Route::resource('reservations', App\Http\Controllers\API\ReservationAPIControlle
 
 Route::resource('offices', App\Http\Controllers\API\OfficeAPIController::class)
     ->except(['create', 'edit']);
+
+Route::post('reservations', App\Http\Controllers\API\CreateReservationController::class);

@@ -20,8 +20,13 @@ final class CreateReservationTest extends \PHPUnit\Framework\TestCase
 
         // When:
         $office = OfficeAvailability::create($createOfficeCommand);
+        $officeJson = $office->jsonSerialize();
 
         // Then:
         $this->assertInstanceOf(OfficeAvailability::class, $office);
+        $this->assertEquals($officeId, $officeJson['id']);
+        $this->assertEquals('Office 1', $officeJson['name']);
+        $this->assertEmpty($officeJson['reservations']);
+        $this->assertEmpty($officeJson['freeDates']);
     }
 }

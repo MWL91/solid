@@ -6,7 +6,7 @@ namespace Reservations\DomainModel;
 use Ramsey\Uuid\UuidInterface;
 use Reservations\DomainModel\Commands\CreateOfficeCommand;
 
-final class OfficeAvailability
+final class OfficeAvailability implements \JsonSerializable
 {
     private OfficeId $id;
     private OfficeName $name;
@@ -23,4 +23,13 @@ final class OfficeAvailability
         return $office;
     }
 
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'name' => (string) $this->name,
+            'reservations' => $this->reservations,
+            'freeDates' => $this->freeDates,
+        ];
+    }
 }

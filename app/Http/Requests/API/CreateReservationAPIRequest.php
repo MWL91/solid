@@ -2,28 +2,22 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\Reservation;
-use InfyOm\Generator\Request\APIRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CreateReservationAPIRequest extends APIRequest
+class CreateReservationAPIRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
-        return Reservation::$rules;
+        return [
+            'customer_name' => 'required',
+            'office_id' => ['required', 'integer'],
+            'reservation_date' => ['required', 'date'],
+            'duration' => ['required', 'min:1']
+        ];
     }
 }

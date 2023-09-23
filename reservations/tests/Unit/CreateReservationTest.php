@@ -29,4 +29,24 @@ final class CreateReservationTest extends \PHPUnit\Framework\TestCase
         $this->assertEmpty($officeJson['reservations']);
         $this->assertEmpty($officeJson['freeDates']);
     }
+
+    public function testItShouldRestoreOffice(): void {
+        // Given:
+        $payload = [
+            'id' => $officeId = Uuid::uuid4()->toString(),
+            'name' => 'Office 1',
+            'reservations' => [],
+            'freeDates' => [],
+        ];
+
+        // When:
+        $office = OfficeAvailability::restore($payload);
+        $officeJson = $office->jsonSerialize();
+
+        // Then:
+        $this->assertEquals($officeId, $officeJson['id']);
+        $this->assertEquals('Office 1', $officeJson['name']);
+        $this->assertEmpty($officeJson['reservations']);
+        $this->assertEmpty($officeJson['freeDates']);
+    }
 }

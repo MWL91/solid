@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
 use App\Services\BlikService;
 use App\Services\PayPalService;
@@ -13,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 
 class OrderController extends Controller
 {
-    public function create(Request $request): JsonResponse
+    public function create(CreateOrderRequest $request): JsonResponse
     {
         $id = Uuid::uuid4();
 

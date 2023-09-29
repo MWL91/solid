@@ -5,28 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
 use App\Services\BlikService;
+use App\Services\Interfaces\IOrdersService;
 use App\Services\PayPalService;
 use App\Services\Przelewy24Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Ramsey\Uuid\Uuid;
 
 class OrderController extends Controller
 {
+    public function __construct(private IOrdersService $orderService)
+    {
+    }
+
     public function create(CreateOrderRequest $request): JsonResponse
     {
         $id = Uuid::uuid4();
 
-        $order = Order::create([
-            'id' => $id->toString(),
-            'is_paid' => false,
-            'payment_method' => null,
-            'minor_amount' => $request->get('price') * 100,
-            'currency' => $request->get('currency')
-        ]);
+        $this->orderService->create($id, $request->getOrder());
 
-        return new JsonResponse($order);
+        return new JsonResponse([
+            'id' => $id->toString()
+        ]);
     }
 
     public function pay(Request $request)

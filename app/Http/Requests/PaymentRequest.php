@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PaymentMethod;
 use App\ValueObjects\Payment;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,5 +28,10 @@ class PaymentRequest extends FormRequest
             $this->get('price'),
             $this->get('currency')
         );
+    }
+
+    public function getPaymentMethod(): PaymentMethod
+    {
+        return PaymentMethod::fromString($this->get('payment_method'));
     }
 }

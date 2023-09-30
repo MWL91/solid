@@ -9,5 +9,5 @@ interface OrderRepository
 {
     public function create(UuidInterface $id, CreateNewOrder $order): void;
 
-    public function setAsPaid(UuidInterface $id, string $paymentType): void;
+    public function setAsPaid(UuidInterface $id, string $paymentMethod): void;
 }

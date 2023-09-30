@@ -10,4 +10,5 @@ interface IPaymentMethod
     public function getRedirectUrl(Payment $payment): string;
 
     public function getName(): string;
+
 }

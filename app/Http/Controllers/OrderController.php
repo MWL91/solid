@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentMethod;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\PaymentRequest;
 use App\Models\Order;

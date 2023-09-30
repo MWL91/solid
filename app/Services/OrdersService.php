@@ -3,21 +3,22 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PaymentMethod;
 use App\Events\OrderCreated;
 use App\Repositories\OrderRepository;
 use App\Services\Interfaces\IOrdersService;
-use App\Services\Interfaces\IPaymentMethod;
 use App\ValueObjects\CreateNewOrder;
 use App\ValueObjects\Payment;
+use Illuminate\Contracts\Foundation\Application;
 use Ramsey\Uuid\UuidInterface;
 
 final class OrdersService implements IOrdersService
 {
-    private OrderRepository $orderRepository;
-
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(
+        private OrderRepository $orderRepository,
+        private Application $app
+    )
     {
-        $this->orderRepository = $orderRepository;
     }
 
     public function create(UuidInterface $id, CreateNewOrder $order): void
@@ -26,11 +27,13 @@ final class OrdersService implements IOrdersService
         OrderCreated::dispatch($id, $order);
     }
 
-    public function getRedirectUrl(IPaymentMethod $paymentMethod, Payment $payment): string
+    public function getRedirectUrl(PaymentMethod $paymentMethod, Payment $payment): string
     {
-        $url = $paymentMethod->getRedirectUrl($payment);
+        $paymentProcessor = $this->app->make($paymentMethod->getPaymentProcessor());
 
-        $this->orderRepository->setAsPaid($payment->getOrderId(), $paymentMethod->getName());
+        $url = $paymentProcessor->getRedirectUrl($payment);
+
+        $this->orderRepository->setAsPaid($payment->getOrderId(), $paymentProcessor->getName());
 
         return $url;
     }

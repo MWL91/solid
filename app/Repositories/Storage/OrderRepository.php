@@ -13,4 +13,11 @@ class OrderRepository implements \App\Repositories\OrderRepository
     {
         Storage::put('orders/' . $id->toString() . '.json', json_encode($order->toArray()));
     }
+
+    public function setAsPaid(UuidInterface $id, string $paymentMethod): void
+    {
+        $order = json_decode(Storage::get('orders/' . $id->toString() . '.json'), true);
+        $order['payment_type'] = $paymentMethod;
+        Storage::put('orders/' . $id->toString() . '.json', json_encode($order));
+    }
 }

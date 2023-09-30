@@ -16,4 +16,11 @@ final class OrderRepository implements \App\Repositories\OrderRepository
             ...$order->toArray(),
         ]);
     }
+
+    public function setAsPaid(UuidInterface $id, string $paymentMethod): void
+    {
+        $order = Order::findOrFail($id->toString());
+        $order->payment_method = $paymentMethod;
+        $order->save();
+    }
 }

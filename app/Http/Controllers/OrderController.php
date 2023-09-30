@@ -33,29 +33,21 @@ class OrderController extends Controller
 
     public function pay(PaymentRequest $request)
     {
-        $order = Order::where('id', $request->get('order_id'))->first();
-
         switch($request->get('payment_method')) {
             case 'przelewy24':
                 $processor = new Przelewy24Service();
-                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             case 'paypal':
                 $processor = new PaypalService();
-                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             case 'blik':
                 $processor = new BlikService();
-                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             default:
                 abort(404);
         }
 
-        $order->update([
-            'is_paid' => true,
-            'payment_method' => $request->get('payment_method')
-        ]);
+        $url = $this->orderService->getRedirectUrl($processor, $request->getPayment());
 
         return redirect($url);
     }

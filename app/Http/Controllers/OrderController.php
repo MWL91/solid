@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
-use App\Services\BlikService;
 use App\Services\Interfaces\IOrdersService;
-use App\Services\PayPalService;
-use App\Services\Przelewy24Service;
+use App\Services\Payments\BlikService;
+use App\Services\Payments\PaypalService;
+use App\Services\Payments\Przelewy24Service;
+use App\ValueObjects\Payment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
@@ -35,36 +36,31 @@ class OrderController extends Controller
 
         switch($request->get('payment_method')) {
             case 'przelewy24':
-                $processor = new Przelewy24Service($request->get('order_id'), $request->get('price'), $request->get('currency'));
-                $url = $processor->paymentUrl();
+                $processor = new Przelewy24Service();
+                $url = $processor->getRedirectUrl(new Payment(
+                    $request->get('order_id'),
+                    $request->get('price'),
+                    $request->get('currency')
+                ));
                 break;
             case 'paypal':
-                $processor = new PayPalService($request->get('order_id'));
-                $url = $processor->redirectAddress($request->get('price'), $request->get('currency'), true);
+                $processor = new PaypalService();
+                $url = $processor->getRedirectUrl(new Payment(
+                    $request->get('order_id'),
+                    $request->get('price'),
+                    $request->get('currency')
+                ));
                 break;
             case 'blik':
                 $processor = new BlikService();
-                $blikHash = $processor->getHash($request->get('order_id'), $request->get('price'));
+                $url = $processor->getRedirectUrl(new Payment(
+                    $request->get('order_id'),
+                    $request->get('price'),
+                    $request->get('currency')
+                ));
                 break;
             default:
-                return new JsonResponse([
-                    'message' => 'Unknown payment method'
-                ], 400);
-        }
-
-        if(isset($blikHash)) {
-            $blikSended = $processor->sendBlik($blikHash, $request->get('code'));
-
-            if($blikSended) {
-                $order->update([
-                    'is_paid' => true,
-                    'payment_method' => 'blik'
-                ]);
-            } else {
-                return new JsonResponse([
-                    'message' => 'Blik code is invalid'
-                ], 400);
-            }
+                abort(404);
         }
 
         $order->update([
@@ -72,12 +68,6 @@ class OrderController extends Controller
             'payment_method' => $request->get('payment_method')
         ]);
 
-        if(isset($url)) {
-            return redirect($url);
-        }
-
-        return new JsonResponse([
-            'message' => 'Payment successful'
-        ]);
+        return redirect($url);
     }
 }

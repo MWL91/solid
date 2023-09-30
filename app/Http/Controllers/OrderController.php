@@ -34,21 +34,10 @@ class OrderController extends Controller
 
     public function pay(PaymentRequest $request)
     {
-        switch($request->get('payment_method')) {
-            case 'przelewy24':
-                $processor = new Przelewy24Service();
-                break;
-            case 'paypal':
-                $processor = new PaypalService();
-                break;
-            case 'blik':
-                $processor = new BlikService();
-                break;
-            default:
-                abort(404);
-        }
-
-        $url = $this->orderService->getRedirectUrl($processor, $request->getPayment());
+        $url = $this->orderService->getRedirectUrl(
+            $request->getPaymentMethod(),
+            $request->getPayment()
+        );
 
         return redirect($url);
     }

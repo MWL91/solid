@@ -9,11 +9,12 @@ use Ramsey\Uuid\UuidInterface;
 
 final class OrderRepository implements \App\Repositories\OrderRepository
 {
+
     public function create(UuidInterface $id, CreateNewOrder $order): void
     {
         Order::create([
             'id' => $id->toString(),
-            ...$order->toArray(),
+            ...$order->toArray()
         ]);
     }
 }

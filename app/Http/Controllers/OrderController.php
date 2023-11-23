@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateOrderRequest;
+use App\Http\Requests\PaymentRequest;
 use App\Models\Order;
 use App\Services\Interfaces\IOrdersService;
 use App\Services\Payments\BlikService;
@@ -30,34 +31,22 @@ class OrderController extends Controller
         ]);
     }
 
-    public function pay(Request $request)
+    public function pay(PaymentRequest $request)
     {
         $order = Order::where('id', $request->get('order_id'))->first();
 
         switch($request->get('payment_method')) {
             case 'przelewy24':
                 $processor = new Przelewy24Service();
-                $url = $processor->getRedirectUrl(new Payment(
-                    $request->get('order_id'),
-                    $request->get('price'),
-                    $request->get('currency')
-                ));
+                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             case 'paypal':
                 $processor = new PaypalService();
-                $url = $processor->getRedirectUrl(new Payment(
-                    $request->get('order_id'),
-                    $request->get('price'),
-                    $request->get('currency')
-                ));
+                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             case 'blik':
                 $processor = new BlikService();
-                $url = $processor->getRedirectUrl(new Payment(
-                    $request->get('order_id'),
-                    $request->get('price'),
-                    $request->get('currency')
-                ));
+                $url = $processor->getRedirectUrl($request->getPayment());
                 break;
             default:
                 abort(404);

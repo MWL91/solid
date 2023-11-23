@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\OrdersService;
 use App\ValueObjects\Payment;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -9,7 +10,7 @@ class PaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return array_key_exists($this->get('payment_method'), OrdersService::PAYMENT_METHODS);
     }
     public function rules(): array
     {

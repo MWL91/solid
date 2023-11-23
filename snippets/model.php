@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,3 +18,12 @@ class Office extends Model
         return $this->reservations()->count() < $this->capacity;
     }
 }
+
+// ...
+
+$office = Office::first();
+$office->capacity = 10;
+$this->assertTrue($office->canReserve());
+// Data has not been stored!
+
+

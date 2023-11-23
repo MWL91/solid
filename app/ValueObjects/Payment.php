@@ -41,4 +41,9 @@ final class Payment implements Arrayable
     {
         return $this->value;
     }
+
+    public function getCurrency(): string
+    {
+        return $this->value->getCurrency()->getCode();
+    }
 }

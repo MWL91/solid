@@ -11,5 +11,5 @@ interface IOrdersService
 {
     public function create(UuidInterface $id, CreateNewOrder $order): void;
 
-    public function getRedirectUrl(PaymentMethod $paymentMethod, Payment $payment): string;
+    public function getRedirectUrl(Payment $payment): string;
 }

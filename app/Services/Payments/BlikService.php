@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace App\Services\Payments;
 
 use App\Services\Interfaces\IPaymentMethod;
+use App\Services\Interfaces\PaymentStrategy;
 use App\ValueObjects\Payment;
 use Illuminate\Support\Facades\URL;
 
-final class BlikService implements IPaymentMethod
+final class BlikService implements IPaymentMethod, PaymentStrategy
 {
     public const NAME = 'blik';
 
@@ -22,5 +23,10 @@ final class BlikService implements IPaymentMethod
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    public function isSatisfiedBy(Payment $payment): bool
+    {
+        return $payment->getValue()->getAmount() < 1000;
     }
 }

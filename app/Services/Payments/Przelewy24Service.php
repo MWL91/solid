@@ -5,9 +5,10 @@ namespace App\Services\Payments;
 
 use App\Services\Interfaces\IPaymentMethod;
 use App\Services\Interfaces\IRecurringPaymentMethod;
+use App\Services\Interfaces\PaymentStrategy;
 use App\ValueObjects\Payment;
 
-final class Przelewy24Service implements IPaymentMethod, IRecurringPaymentMethod
+final class Przelewy24Service implements IPaymentMethod, IRecurringPaymentMethod, PaymentStrategy
 {
     public const NAME = 'przelewy24';
 
@@ -31,5 +32,10 @@ final class Przelewy24Service implements IPaymentMethod, IRecurringPaymentMethod
     public function subscribe(Payment $payment, \DateTimeInterface $repeatAt): void
     {
         // TODO: Implement subscribe() method.
+    }
+
+    public function isSatisfiedBy(Payment $payment): bool
+    {
+        return  $payment->getCurrency() === 'PLN';
     }
 }
